@@ -130,7 +130,14 @@ export class TemplateHelper {
 
   private static expandExpressionsAsString(str: string, context: object, additionalContext: object) {
     return str.replace(this.expression, (match, p1) => {
-      const value = this.evalInContext(p1 || this.trimExpression(match), { ...context, ...additionalContext });
+      let value: object = null;
+
+      if (p1 === 'response') {
+        value = context;
+      } else {
+        value = this.evalInContext(p1 || this.trimExpression(match), { ...context, ...additionalContext });
+      }
+
       if (value) {
         if (typeof value === 'object') {
           return JSON.stringify(value);
